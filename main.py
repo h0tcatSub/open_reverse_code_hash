@@ -28,10 +28,10 @@ def check_key(reverse_code, address):
     weak_point = (G2 * G3).x
     x_hash_02 = bitcoin.hash160(f'02{format(weak_point, "064x")}'.encode())
     x_hash_03 = bitcoin.hash160(f'03{format(weak_point, "064x")}'.encode())
-    private_key_02 = int(f"{x_hash_02}{hex_reverse_code}", 16)
-    private_key_03 = int(f"{x_hash_03}{hex_reverse_code}", 16)
-    address_02 = bitcoin.pubkey_to_address(bitcoin.compress(bitcoin.privkey_to_pubkey(private_key_02)))
-    address_03 = bitcoin.pubkey_to_address(bitcoin.compress(bitcoin.privkey_to_pubkey(private_key_03)))
+    private_key_02 = f"{x_hash_02}{hex_reverse_code}"
+    private_key_03 = f"{x_hash_03}{hex_reverse_code}"
+    address_02 = bitcoin.pubkey_to_address(bitcoin.privkey_to_pubkey(int(private_key_02, 16) % Point.order))
+    address_03 = bitcoin.pubkey_to_address(bitcoin.privkey_to_pubkey(int(private_key_03, 16) % Point.order))
     
     return (address_02 == address) or (address_03 == address)
     #return 
