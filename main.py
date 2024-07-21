@@ -17,19 +17,19 @@ def check_key(reverse_code, address):
     hex_reverse_code = format(reverse_code, "028x")
     b58 = str(base58.b58encode(hex_reverse_code.encode()))
     b58 = b58[1:].replace("\'", "")
-    hash_key = hashlib.sha256(b58).hexdigest()
+    hash_key = hashlib.sha256(b58.encode()).hexdigest()
     weak_key_1 = hash_key
     weak_pubkey_x = bitcoin.compress(bitcoin.privkey_to_pubkey(hash_key))[2:]
     weak_key_2 = f"{b58}{weak_pubkey_x}"
-    weak_key_2 = int(hashlib.sha256(weak_key_2).hexdigest(), 16)
+    weak_key_2 = int(hashlib.sha256(weak_key_2.encode()).hexdigest(), 16)
     #weak_key = weak_key_1 * weak_key_2
     G2 = G * weak_key_1
     G3 = G * weak_key_2
     weak_point = (G2 * G3).x
     x_hash_02 = bitcoin.hash160(f'02{format(weak_point, "064x")}')
     x_hash_03 = bitcoin.hash160(f'03{format(weak_point, "064x")}')
-    private_key_02 = f"{x_hash_02}{hex_reverse_code}"
-    private_key_03 = f"{x_hash_03}{hex_reverse_code}"
+    private_key_02 = int(f"{x_hash_02}{hex_reverse_code}", 16)
+    private_key_03 = int(f"{x_hash_03}{hex_reverse_code}", 16)
     address_02 = bitcoin.pubkey_to_address(bitcoin.compress(bitcoin.privkey_to_pubkey(private_key_02)))
     address_03 = bitcoin.pubkey_to_address(bitcoin.compress(bitcoin.privkey_to_pubkey(private_key_03)))
     
