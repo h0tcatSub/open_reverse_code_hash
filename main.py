@@ -15,11 +15,12 @@ G3 = Point(Point.Gx, Point.Gy)
 def check_key(reverse_code, address):
     global G, G2, G3
     hex_reverse_code = format(reverse_code, "028x")
-    b58 = base58.b58encode(hex_reverse_code.encode())
+    b58 = str(base58.b58encode(hex_reverse_code.encode()))
+    b58 = b58[1:].replace("\'", "")
     hash_key = hashlib.sha256(b58).hexdigest()
     weak_key_1 = hash_key
     weak_pubkey_x = bitcoin.compress(bitcoin.privkey_to_pubkey(hash_key))[2:]
-    weak_key_2 = f"{b58}{weak_key_2}"
+    weak_key_2 = f"{b58}{weak_pubkey_x}"
     weak_key_2 = int(hashlib.sha256(weak_key_2).hexdigest(), 16)
     #weak_key = weak_key_1 * weak_key_2
     G2 = G * weak_key_1
