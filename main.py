@@ -18,7 +18,7 @@ def check_key(reverse_code, address):
     b58 = str(base58.b58encode(hex_reverse_code.encode()))
     b58 = b58[1:].replace("\'", "")
     hash_key = hashlib.sha256(b58.encode()).hexdigest()
-    weak_key_1 = hash_key
+    weak_key_1 = int(hash_key, 16)
     weak_pubkey_x = bitcoin.compress(bitcoin.privkey_to_pubkey(hash_key))[2:]
     weak_key_2 = f"{b58}{weak_pubkey_x}"
     weak_key_2 = int(hashlib.sha256(weak_key_2.encode()).hexdigest(), 16)
